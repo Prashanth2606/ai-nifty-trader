@@ -57,4 +57,28 @@ class OptionChain:
             "resistance": resistance,
             "max_put_oi": max_put_oi,
             "max_call_oi": max_call_oi
+
+
+            
         }
+
+
+    def get_pcr(self, chain):
+
+        option_data = chain["data"]["data"]["oc"]
+
+        total_call_oi = 0
+        total_put_oi = 0
+
+        for strike, values in option_data.items():
+
+            total_call_oi += values["ce"]["oi"]
+            total_put_oi += values["pe"]["oi"]
+
+        if total_call_oi == 0:
+            return 0
+
+        pcr = total_put_oi / total_call_oi
+
+        return round(pcr, 2) 
+    

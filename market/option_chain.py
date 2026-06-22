@@ -57,11 +57,7 @@ class OptionChain:
             "resistance": resistance,
             "max_put_oi": max_put_oi,
             "max_call_oi": max_call_oi
-
-
-            
         }
-
 
     def get_pcr(self, chain):
 
@@ -80,5 +76,43 @@ class OptionChain:
 
         pcr = total_put_oi / total_call_oi
 
-        return round(pcr, 2) 
-    
+        return round(pcr, 2)
+
+    def get_atm_oi_analysis(self, chain, atm):
+
+        option_data = chain["data"]["data"]["oc"]
+
+        strike_key = f"{atm:.6f}"
+
+        if strike_key not in option_data:
+            return None
+
+        ce = option_data[strike_key]["ce"]
+        pe = option_data[strike_key]["pe"]
+
+        ce_oi = ce["oi"]
+        ce_prev_oi = ce["previous_oi"]
+
+        pe_oi = pe["oi"]
+        pe_prev_oi = pe["previous_oi"]
+
+        ce_change = ce_oi - ce_prev_oi
+        pe_change = pe_oi - pe_prev_oi
+
+        signal = "NEUTRAL"
+
+        if pe_change > ce_change:
+            signal = "PUT WRITING"
+
+        elif ce_change > pe_change:
+            signal = "CALL WRITING"
+
+        return {
+            "ce_oi": ce_oi,
+            "ce_prev_oi": ce_prev_oi,
+            "ce_change": ce_change,
+            "pe_oi": pe_oi,
+            "pe_prev_oi": pe_prev_oi,
+            "pe_change": pe_change,
+            "signal": signal
+        }

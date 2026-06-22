@@ -5,24 +5,21 @@ print("=" * 50)
 print("AI NIFTY OPTIONS TRADER")
 print("=" * 50)
 
-# Initialize objects
 market = MarketQuotes()
 oc = OptionChain()
 
-# Get spot price
 spot = market.get_nifty()["last_price"]
 
-# Get option chain once
 chain = oc.get_raw_chain()
 
-# Analytics
 atm = oc.get_atm_strike(chain, spot)
 
 sr = oc.get_support_resistance(chain)
 
 pcr = oc.get_pcr(chain)
 
-# Market Bias
+oi = oc.get_atm_oi_analysis(chain, atm)
+
 if pcr > 1.1:
     bias = "BULLISH"
 
@@ -32,7 +29,6 @@ elif pcr < 0.9:
 else:
     bias = "NEUTRAL"
 
-# Output
 print()
 
 print(f"NIFTY       : {spot}")
@@ -50,8 +46,17 @@ print(f"BIAS        : {bias}")
 
 print()
 
-print(f"MAX PUT OI  : {sr['max_put_oi']}")
-print(f"MAX CALL OI : {sr['max_call_oi']}")
+print(f"ATM CE OI       : {oi['ce_oi']}")
+print(f"ATM CE CHANGE   : {oi['ce_change']}")
+
+print()
+
+print(f"ATM PE OI       : {oi['pe_oi']}")
+print(f"ATM PE CHANGE   : {oi['pe_change']}")
+
+print()
+
+print(f"ATM SIGNAL      : {oi['signal']}")
 
 print()
 print("=" * 50)

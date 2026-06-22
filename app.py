@@ -5,21 +5,29 @@ print("=" * 50)
 print("AI NIFTY OPTIONS TRADER")
 print("=" * 50)
 
+# Initialize
 market = MarketQuotes()
 oc = OptionChain()
 
+# Live Nifty Spot
 spot = market.get_nifty()["last_price"]
 
+# Fetch Option Chain Once
 chain = oc.get_raw_chain()
 
+# Analytics
 atm = oc.get_atm_strike(chain, spot)
 
-sr = oc.get_support_resistance(chain)
+# Near ATM Support / Resistance
+sr = oc.get_near_atm_support_resistance(chain, atm)
 
+# PCR
 pcr = oc.get_pcr(chain)
 
+# ATM OI Analysis
 oi = oc.get_atm_oi_analysis(chain, atm)
 
+# Market Bias
 if pcr > 1.1:
     bias = "BULLISH"
 
@@ -29,6 +37,7 @@ elif pcr < 0.9:
 else:
     bias = "NEUTRAL"
 
+# Output
 print()
 
 print(f"NIFTY       : {spot}")

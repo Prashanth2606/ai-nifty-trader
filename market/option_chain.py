@@ -59,6 +59,48 @@ class OptionChain:
             "max_call_oi": max_call_oi
         }
 
+    def get_near_atm_support_resistance(self, chain, atm):
+
+        option_data = chain["data"]["data"]["oc"]
+
+        strikes = sorted(
+            [float(strike) for strike in option_data.keys()]
+        )
+
+        nearby_strikes = [
+            strike
+            for strike in strikes
+            if abs(strike - atm) <= 500
+        ]
+
+        max_call_oi = -1
+        max_put_oi = -1
+
+        resistance = None
+        support = None
+
+        for strike in nearby_strikes:
+
+            strike_key = f"{strike:.6f}"
+
+            ce_oi = option_data[strike_key]["ce"]["oi"]
+            pe_oi = option_data[strike_key]["pe"]["oi"]
+
+            if ce_oi > max_call_oi:
+                max_call_oi = ce_oi
+                resistance = strike
+
+            if pe_oi > max_put_oi:
+                max_put_oi = pe_oi
+                support = strike
+
+        return {
+            "support": support,
+            "resistance": resistance,
+            "max_put_oi": max_put_oi,
+            "max_call_oi": max_call_oi
+        }
+
     def get_pcr(self, chain):
 
         option_data = chain["data"]["data"]["oc"]

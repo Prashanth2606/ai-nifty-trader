@@ -11,7 +11,7 @@ class OptionChain:
         return self.dhan.option_chain(
             under_security_id=13,
             under_exchange_segment="IDX_I",
-            expiry="2026-06-23"
+            expiry="2026-06-30"
         )
 
     def get_atm_strike(self, chain, spot_price):
